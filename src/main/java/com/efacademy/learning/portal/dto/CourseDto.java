@@ -8,4 +8,6 @@ public class CourseDto {
 	private String courseName;
 
 	private String category;
+
+	private String authorID;
 }

@@ -29,11 +29,16 @@ public class CategoryController {
 
 	@PostMapping("/create")
 	public ResponseEntity<HashMap<String, String>> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+		boolean add = categoryService.addCategory(categoryDto);
 		HashMap<String, String> response = new HashMap<>();
 		try {
-			categoryService.addCategory(categoryDto);
-			response.put(MESSAGE_KEY, "Category Added.");
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
+			if (add) {
+				response.put(MESSAGE_KEY, "Category Added.");
+				return new ResponseEntity<>(response, HttpStatus.CREATED);
+			} else {
+				response.put(MESSAGE_KEY, "Something went wrong");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
 			response.put(MESSAGE_KEY, e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -45,27 +50,27 @@ public class CategoryController {
 
 	@GetMapping("/all")
 	public ResponseEntity<Object> getAllCategory() {
-	    try {
-	        List<Category> allCategories = categoryService.getAllCategories();
+		try {
+			List<Category> allCategories = categoryService.getAllCategories();
 
-	        if (allCategories != null) {
-	            HashMap<String, List<Category>> response = new HashMap<>();
-	            response.put("categories", allCategories);
-	            return new ResponseEntity<>(response, HttpStatus.OK);
-	        } else {
-	            HashMap<String, String> noCategoriesResponse = new HashMap<>();
-	            noCategoriesResponse.put(MESSAGE_KEY, "No categories found.");
-	            return new ResponseEntity<>(noCategoriesResponse, HttpStatus.NOT_FOUND);
-	        }
+			if (allCategories != null) {
+				HashMap<String, List<Category>> response = new HashMap<>();
+				response.put("categories", allCategories);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				HashMap<String, String> noCategoriesResponse = new HashMap<>();
+				noCategoriesResponse.put(MESSAGE_KEY, "No categories found.");
+				return new ResponseEntity<>(noCategoriesResponse, HttpStatus.NOT_FOUND);
+			}
 
-	    } catch (Exception e) {
-	        HashMap<String, String> errorResponse = new HashMap<>();
-	        errorResponse.put(MESSAGE_KEY, e.getMessage());
-	        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	    } catch (InternalError e) {
-	        HashMap<String, String> errorResponse = new HashMap<>();
-	        errorResponse.put(MESSAGE_KEY, "An unexpected error occurred");
-	        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		} catch (Exception e) {
+			HashMap<String, String> errorResponse = new HashMap<>();
+			errorResponse.put(MESSAGE_KEY, e.getMessage());
+			return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		} catch (InternalError e) {
+			HashMap<String, String> errorResponse = new HashMap<>();
+			errorResponse.put(MESSAGE_KEY, "An unexpected error occurred");
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

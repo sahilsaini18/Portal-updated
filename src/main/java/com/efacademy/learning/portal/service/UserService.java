@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.efacademy.learning.portal.dto.LoginUserDto;
 import com.efacademy.learning.portal.dto.RegisterUserDto;
-import com.efacademy.learning.portal.entity.Role;
 import com.efacademy.learning.portal.entity.User;
 import com.efacademy.learning.portal.mapper.UserMapper;
 import com.efacademy.learning.portal.repository.RoleRepository;
@@ -21,40 +20,34 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private RoleRepository roleRepository;
-
-	@Autowired
 	private UserMapper userMapper;
 
-	public boolean registerUser(RegisterUserDto registerUser) {
+	@Autowired
+	private RoleRepository roleRepository;
 
-		User user = userRepository.findByEmail(registerUser.getEmail());
-		if (user != null)
+	public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
+		super();
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.userMapper = userMapper;
+	}
+
+	public boolean registerUser(RegisterUserDto registerUserDto) {
+		try {
+			User user = userMapper.toDto(registerUserDto);
+			userRepository.save(user);
+			return true;
+		} catch (Exception e) {
+
 			return false;
-
-		user = userMapper.toDto(registerUser);
-		Role defaultRole = roleRepository.findByRoleType("Learner");
-
-		if (defaultRole == null) {
-			defaultRole = new Role();
-			defaultRole.setRoleType("Learner");
-
-			roleRepository.save(defaultRole);
 		}
-		user.getRoles().add(defaultRole);
-		userRepository.save(user);
-
-		return true;
-
 	}
 
 	public boolean loginUser(LoginUserDto loginUser) {
-
 		try {
 			User user = userRepository.findByEmail(loginUser.getEmail());
-			RegisterUserDto userDetails = userMapper.toEntity(user);
 
-			if (userDetails.getPassword().equals(loginUser.getPassword())) {
+			if (user != null && user.getPassword().equals(loginUser.getPassword())) {
 				log.info("User logged in successfully: {}", loginUser.getEmail());
 				return true;
 			} else {

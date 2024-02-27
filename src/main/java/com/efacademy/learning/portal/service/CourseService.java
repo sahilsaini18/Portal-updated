@@ -38,7 +38,6 @@ public class CourseService {
 	private CourseMapper courseMapper;
 
 	public boolean addCourse(CourseDto courseDto) {
-
 		Optional<Category> categoryObj = categoryRepository.findByCategoryType(courseDto.getCategory());
 
 		if (categoryObj.isEmpty()) {
@@ -46,11 +45,17 @@ public class CourseService {
 		}
 
 		Category category = categoryObj.get();
-		Courses course = courseMapper.toDto(courseDto);
+
+		Courses course = new Courses();
+
+		course.setCourseName(courseDto.getCourseName());
+		course.setAuthorID(courseDto.getAuthorID());
+
+		course = courseRepository.save(course);
 
 		CoursesCategory obj = new CoursesCategory();
 		obj.setCategory(category);
-		obj.setCourse(courseRepository.save(course));
+		obj.setCourse(course);
 		coursesCategoryRepository.save(obj);
 
 		log.info("Course added successfully: {}", course);

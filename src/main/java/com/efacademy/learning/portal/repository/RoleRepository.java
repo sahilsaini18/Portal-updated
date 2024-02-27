@@ -9,4 +9,6 @@ import com.efacademy.learning.portal.entity.Role;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
 	Role findByRoleType(String roletype);
+
+	Role save(Role role);
 }

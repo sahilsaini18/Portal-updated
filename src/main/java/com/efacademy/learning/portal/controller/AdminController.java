@@ -41,13 +41,20 @@ public class AdminController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginUserDto loginUserDto) {
 		HashMap<String, String> response = new HashMap<>();
+
 		try {
-			userService.loginUser(loginUserDto);
-			response.put(MESSAGE_KEY, "User logged in successfully");
-			return new ResponseEntity<>(response, HttpStatus.OK);
+
+			if (userService.loginUser(loginUserDto)) {
+				response.put(MESSAGE_KEY, "User logged in successfully");
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				response.put(MESSAGE_KEY, "Invalid username or password");
+				return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+			}
 		} catch (Exception e) {
 			response.put(MESSAGE_KEY, "User authentication failed");
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 }

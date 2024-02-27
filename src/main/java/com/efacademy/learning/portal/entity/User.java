@@ -46,12 +46,12 @@ public class User {
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_fav", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "courses_id", referencedColumnName = "id"))
 	private Set<Courses> favourites = new HashSet<>();
-	
-	 @Column(name = "created_at", nullable = false, updatable = false)
-	    private LocalDateTime createdAt;
 
-	    @PrePersist
-	    protected void onCreate() {
-	        createdAt = LocalDateTime.now();
-	    }
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+	}
 }

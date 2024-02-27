@@ -36,10 +36,10 @@ public class CourseController {
 			return new ResponseEntity<>(Collections.singletonMap(MESSAGE_KEY, "Course added successfully"),
 					HttpStatus.OK);
 		} catch (Exception e) {
-			// Assuming CourseServiceException is a custom exception you've defined
+
 			return new ResponseEntity<>(Collections.singletonMap(MESSAGE_KEY, e.getMessage()), HttpStatus.BAD_REQUEST);
 		} catch (InternalError e) {
-			// Catching any other exceptions
+
 			return new ResponseEntity<>(Collections.singletonMap(MESSAGE_KEY, "An unexpected error occurred"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
